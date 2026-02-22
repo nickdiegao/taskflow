@@ -48,12 +48,12 @@ describe('AuthService', () => {
   describe('login', () => {
     it('Deve retornar um token JWT quando as credenciais forem válidas', async () => {
       const password = await bcrypt.hash('123456', 10);
-      const user = { id: 1, email: 'nicholas@email.com', name: 'Nicholas'};
+      const user = { id: 1, email: 'nicholas@email.com', name: 'Nicholas', password};
 
       mockUsersService.findByEmail.mockResolvedValue(user);
-      mockJwtService.sign.mockReturnValue('tocken_jwt_fake');
+      mockJwtService.sign.mockReturnValue('token_jwt_fake');
 
-      const result = await service.login({ email: 'nicholas@email.com', password:'123456' });
+      const result = await service.login({ email: user.email, password: '123456' });
 
       expect(result).toEqual({ access_token: 'token_jwt_fake' });
       expect(mockJwtService.sign).toHaveBeenCalledWith({
