@@ -34,15 +34,16 @@ describe('UsersService', () => {
     it('Deve criar um usuário com senha criptografada', async () => {
       const dto = { name: 'Nicholas', email: 'nicholas@email.com', password: '123456' };
 
-      mockUserRepository.create.mockReturnValue({...dto});
-      mockUserRepository.save.mockResolvedValue({ id: 1, ...dto});
+      mockUserRepository.findOne.mockResolvedValue(null);
+      mockUserRepository.create.mockImplementation((data) => (data));
+      mockUserRepository.save.mockImplementation((data) => Promise.resolve({ id: 1, ...data }))
 
       const result = await service.create(dto);
 
-      expect(mockUserRepository.create).toHaveBeenCalledTimes(1);
+      expect(mockUserRepository.save).toHaveBeenCalledTimes(1);
       expect(result.password).not.toBe('123456');
       expect(result.id).toBe(1);
-    })
+    });
 
     it('Deve lançar erro se o email já existir', async () => {
       const dto = { name: 'Nicholas', email:'nicholas@email.com', password: '123456' };
