@@ -10,33 +10,39 @@ const mockUserRepository = {
 };
 
 describe('UsersService', () => {
-    let service: UsersService;
+  let service: UsersService;
 
-    beforeEach(async () => {
-      const module: TestingModule = await Test.createTestingModule({
-        providers: [
-          UsersService, 
-          {
-            provide: getRepositoryToken(User),
-            useValue: mockUserRepository,
-          },
-        ],
-      }).compile();
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        UsersService,
+        {
+          provide: getRepositoryToken(User),
+          useValue: mockUserRepository,
+        },
+      ],
+    }).compile();
 
-      service = module.get<UsersService>(UsersService);
-    });
+    service = module.get<UsersService>(UsersService);
+  });
 
-    afterEach(() => {
-      jest.clearAllMocks();
-    })
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
   describe('create', () => {
     it('Deve criar um usuário com senha criptografada', async () => {
-      const dto = { name: 'Nicholas', email: 'nicholas@email.com', password: '123456' };
+      const dto = {
+        name: 'Nicholas',
+        email: 'nicholas@email.com',
+        password: '123456',
+      };
 
       mockUserRepository.findOne.mockResolvedValue(null);
-      mockUserRepository.create.mockImplementation((data) => (data));
-      mockUserRepository.save.mockImplementation((data) => Promise.resolve({ id: 1, ...data }))
+      mockUserRepository.create.mockImplementation((data) => data);
+      mockUserRepository.save.mockImplementation((data) =>
+        Promise.resolve({ id: 1, ...data }),
+      );
 
       const result = await service.create(dto);
 
@@ -46,13 +52,17 @@ describe('UsersService', () => {
     });
 
     it('Deve lançar erro se o email já existir', async () => {
-      const dto = { name: 'Nicholas', email:'nicholas@email.com', password: '123456' };
+      const dto = {
+        name: 'Nicholas',
+        email: 'nicholas@email.com',
+        password: '123456',
+      };
 
       mockUserRepository.findOne.mockResolvedValue({ id: 1, ...dto });
 
       await expect(service.create(dto)).rejects.toThrow('Email já cadastrado');
-    })
-  })
+    });
+  });
 
   describe('findByEmail', () => {
     it('Deve retornar um usuário pelo email', async () => {
@@ -64,8 +74,8 @@ describe('UsersService', () => {
       expect(result).toEqual(user);
       expect(mockUserRepository.findOne).toHaveBeenCalledWith({
         where: { email: 'nicholas@email.com' },
-      })
-    })
+      });
+    });
 
     it('Deve retornar null caso o usuário não exista', async () => {
       mockUserRepository.findOne.mockResolvedValue(null);
@@ -73,6 +83,6 @@ describe('UsersService', () => {
       const result = await service.findByEmail('naoexiste@email.com');
 
       expect(result).toBeNull();
-    })
-  })
+    });
+  });
 });

@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
-import * as bcrypt from 'bcrypt'
+import * as bcrypt from 'bcrypt';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { UnauthorizedException } from '@nestjs/common';
@@ -33,32 +33,44 @@ describe('AuthService', () => {
 
   describe('register', () => {
     it('Deve registrar um novo usuário', async () => {
-      const dto = { name: 'Nicholas',  email: 'nicholas@email.com', password: '123456' };
-      const created = { id: 1, ...dto }
+      const dto = {
+        name: 'Nicholas',
+        email: 'nicholas@email.com',
+        password: '123456',
+      };
+      const created = { id: 1, ...dto };
 
       mockUsersService.create.mockResolvedValue(created);
 
       const result = await service.register(dto);
 
       expect(mockUsersService.create).toHaveBeenCalledWith(dto);
-      expect(result).toEqual(created)
+      expect(result).toEqual(created);
     });
   });
 
   describe('login', () => {
     it('Deve retornar um token JWT quando as credenciais forem válidas', async () => {
       const password = await bcrypt.hash('123456', 10);
-      const user = { id: 1, email: 'nicholas@email.com', name: 'Nicholas', password};
+      const user = {
+        id: 1,
+        email: 'nicholas@email.com',
+        name: 'Nicholas',
+        password,
+      };
 
       mockUsersService.findByEmail.mockResolvedValue(user);
       mockJwtService.sign.mockReturnValue('token_jwt_fake');
 
-      const result = await service.login({ email: user.email, password: '123456' });
+      const result = await service.login({
+        email: user.email,
+        password: '123456',
+      });
 
       expect(result).toEqual({ access_token: 'token_jwt_fake' });
       expect(mockJwtService.sign).toHaveBeenCalledWith({
         sub: user.id,
-        email: user.email
+        email: user.email,
       });
     });
 
@@ -66,7 +78,7 @@ describe('AuthService', () => {
       mockUsersService.findByEmail.mockResolvedValue(null);
 
       await expect(
-        service.login({ email: 'naoexiste@email.com', password: '123456' })
+        service.login({ email: 'naoexiste@email.com', password: '123456' }),
       ).rejects.toThrow(UnauthorizedException);
     });
 
@@ -77,7 +89,10 @@ describe('AuthService', () => {
       mockUsersService.findByEmail.mockResolvedValue(user);
 
       await expect(
-        service.login({ email: 'nicholas@email.com', password: 'senha_errada' })
+        service.login({
+          email: 'nicholas@email.com',
+          password: 'senha_errada',
+        }),
       ).rejects.toThrow(UnauthorizedException);
     });
   });
