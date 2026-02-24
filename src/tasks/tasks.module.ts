@@ -8,10 +8,11 @@ import { TaskssProcessor } from './task.processor';
 import { TasksScheduler } from './tasks.scheduler';
 import { BullModule } from '@nestjs/bull';
 import { ScheduleModule } from '@nestjs/schedule';
+import { User } from 'src/users/user.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Task]), 
+    TypeOrmModule.forFeature([Task, User]), 
     AuthModule,
     BullModule.registerQueue({ name: 'notifications' }),
     ScheduleModule.forRoot(),

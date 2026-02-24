@@ -1,7 +1,7 @@
 import { Process, Processor } from "@nestjs/bull";
 import { Injectable, Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { Job } from "bull";
+import type { Job } from "bull";
 import * as nodemailer from "nodemailer"
 
 @Injectable()
