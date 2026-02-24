@@ -1,98 +1,216 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# TaskFlow API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+![CI](https://github.com/nickdiegao/taskflow/actions/workflows/ci.yml/badge.svg)
+![Node](https://img.shields.io/badge/node-20.x-brightgreen)
+![NestJS](https://img.shields.io/badge/NestJS-11-red)
+![License](https://img.shields.io/badge/license-UNLICENSED-lightgrey)
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+API REST de gerenciamento de tarefas com autenticação JWT, notificações automáticas por e-mail e sistema de filas com Redis. Desenvolvida com foco em qualidade de código, TDD e boas práticas de engenharia de software.
 
-## Description
+---
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Tecnologias
 
-## Project setup
+- **Node.js** + **TypeScript** + **NestJS** — framework principal
+- **PostgreSQL** — banco de dados relacional
+- **Redis** + **Bull** — sistema de filas para notificações assíncronas
+- **JWT** + **Passport** — autenticação e autorização
+- **Nodemailer** — envio de e-mails
+- **TypeORM** — ORM e modelagem de dados
+- **Docker** + **Docker Compose** — containerização do ambiente
+- **Jest** — testes unitários com TDD
+- **Swagger** — documentação interativa da API
+- **GitHub Actions** — CI/CD automatizado
 
+---
+
+## Funcionalidades
+
+- Cadastro e autenticação de usuários com JWT
+- CRUD completo de tarefas com prioridade e prazo
+- Atualização de status das tarefas (pending, in_progress, done)
+- Notificação automática por e-mail quando uma tarefa vence
+- Sistema de filas assíncrono com Bull e Redis
+- Endpoints protegidos por guard JWT
+- Documentação interativa via Swagger
+
+---
+
+## Pré-requisitos
+
+- [Node.js 20+](https://nodejs.org/)
+- [Docker](https://www.docker.com/)
+
+---
+
+## Como rodar localmente
+
+### 1. Clone o repositório
 ```bash
-$ npm install
+git clone https://github.com/nickdiegao/taskflow.git
+cd taskflow
 ```
 
-## Compile and run the project
-
+### 2. Configure as variáveis de ambiente
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+cp .env.example .env
 ```
 
-## Run tests
+Edite o `.env` com suas credenciais:
+```env
+DATABASE_HOST=localhost
+DATABASE_PORT=5432
+DATABASE_USER=taskflow
+DATABASE_PASSWORD=taskflow123
+DATABASE_NAME=taskflow
 
-```bash
-# unit tests
-$ npm run test
+REDIS_HOST=localhost
+REDIS_PORT=6379
 
-# e2e tests
-$ npm run test:e2e
+JWT_SECRET=sua_chave_secreta
+JWT_EXPIRES_IN=7d
 
-# test coverage
-$ npm run test:cov
+MAIL_HOST=sandbox.smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USER=seu_usuario_mailtrap
+MAIL_PASS=sua_senha_mailtrap
+MAIL_FROM=taskflow@test.com
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
+### 3. Suba o banco de dados e o Redis
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+docker compose up -d
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### 4. Instale as dependências
+```bash
+npm install
+```
 
-## Resources
+### 5. Rode a aplicação
+```bash
+npm run start:dev
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+### 6. Acesse a documentação
+```
+http://localhost:3000/api
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+---
 
-## Support
+## Testes
+```bash
+# Rodar todos os testes
+npm run test
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+# Rodar com cobertura
+npm run test:cov
 
-## Stay in touch
+# Rodar em modo watch
+npm run test:watch
+```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+---
 
-## License
+## Endpoints
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+### Auth
+
+| Método | Rota | Descrição | Auth |
+|--------|------|-----------|------|
+| POST | `/auth/register` | Criar nova conta | ❌ |
+| POST | `/auth/login` | Login e obter token JWT | ❌ |
+
+### Tasks
+
+| Método | Rota | Descrição | Auth |
+|--------|------|-----------|------|
+| POST | `/tasks` | Criar tarefa | ✅ |
+| GET | `/tasks` | Listar tarefas do usuário | ✅ |
+| GET | `/tasks/:id` | Buscar tarefa por ID | ✅ |
+| PUT | `/tasks/:id` | Atualizar tarefa | ✅ |
+| DELETE | `/tasks/:id` | Deletar tarefa | ✅ |
+| PATCH | `/tasks/:id/status` | Atualizar status | ✅ |
+
+---
+
+## Como usar a API
+
+### 1. Criar conta
+```bash
+POST /auth/register
+{
+  "name": "Nicholas Diego",
+  "email": "nick@email.com",
+  "password": "123456"
+}
+```
+
+### 2. Fazer login
+```bash
+POST /auth/login
+{
+  "email": "nick@email.com",
+  "password": "123456"
+}
+```
+
+Resposta:
+```json
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+### 3. Criar tarefa
+```bash
+POST /tasks
+Authorization: Bearer {access_token}
+{
+  "title": "Estudar TDD",
+  "description": "Aprender TDD na prática com NestJS",
+  "priority": "high",
+  "dueDate": "2026-12-31T23:59:59.000Z"
+}
+```
+
+---
+
+## Estrutura do Projeto
+```
+src/
+├── auth/
+│   ├── auth.controller.ts
+│   ├── auth.service.ts
+│   ├── auth.module.ts
+│   ├── jwt.strategy.ts
+│   └── jwt-auth.guard.ts
+├── users/
+│   ├── users.controller.ts
+│   ├── users.service.ts
+│   ├── users.module.ts
+│   └── user.entity.ts
+├── tasks/
+│   ├── tasks.controller.ts
+│   ├── tasks.service.ts
+│   ├── tasks.module.ts
+│   ├── tasks.processor.ts
+│   ├── tasks.scheduler.ts
+│   └── task.entity.ts
+└── app.module.ts
+```
+
+---
+
+## CI/CD
+
+O projeto utiliza **GitHub Actions** para rodar os testes automaticamente a cada push ou pull request na branch `main`. O workflow instala as dependências, roda os testes unitários e gera o relatório de cobertura.
+
+---
+
+## Autor
+
+**Nicholas Diego**
+- GitHub: [@nickdiegao](https://github.com/nickdiegao)
+- LinkedIn: [linkedin.com/in/nicholas-diego](https://linkedin.com/in/nicholas-diego)
